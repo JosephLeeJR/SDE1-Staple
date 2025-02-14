@@ -53,7 +53,7 @@ def validate_prompt(prompt):
         return False, "Prompt must be a string"
     if len(prompt.strip()) == 0:
         return False, "Prompt cannot be empty"
-    if len(prompt) > 1000:  # 设置合理的长度限制
+    if len(prompt) > 1000:  # set a reasonable length limit
         return False, "Prompt too long (max 1000 characters)"
     return True, None
 
@@ -91,6 +91,10 @@ def home():
             font-size: 18px;
             line-height: 1.5;
         }
+        .error {
+            color: #e53e3e;
+            margin-top: 10px;
+        }
     </style>
     <div class="container">
         <form id="chat-form">
@@ -104,13 +108,28 @@ def home():
     document.getElementById('chat-form').onsubmit = async (e) => {
         e.preventDefault();
         const prompt = document.getElementById('prompt').value;
-        const response = await fetch('/openai-completion', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({prompt: prompt})
-        });
-        const data = await response.json();
-        document.getElementById('response').innerText = data.response;
+        const responseDiv = document.getElementById('response');
+        
+        try {
+            const response = await fetch('/openai-completion', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({prompt: prompt})
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                responseDiv.innerText = data.message;
+                responseDiv.className = 'error';
+            } else {
+                responseDiv.innerText = data.response;
+                responseDiv.className = '';
+            }
+        } catch (error) {
+            responseDiv.innerText = 'An error occurred. Please try again.';
+            responseDiv.className = 'error';
+        }
     };
     </script>
     '''
