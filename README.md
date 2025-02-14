@@ -32,3 +32,34 @@ A simple web interface for interacting with OpenAI's GPT models.
 
 - `/` - Main chat interface
 - `/history` - View chat history
+
+## Testing with cURL (Windows)
+
+You can test the API endpoints using the following cURL commands in Windows Command Prompt:
+
+1. Test normal request:
+   ```bash
+   curl -X POST http://localhost:5000/openai-completion -H "Content-Type: application/json" -d "{\"prompt\": \"What is Python?\"}"
+   ```
+
+2. Test empty prompt:
+   ```bash
+   curl -X POST http://localhost:5000/openai-completion -H "Content-Type: application/json" -d "{\"prompt\": \"\"}"
+   ```
+
+3. Test missing prompt field:
+   ```bash
+   curl -X POST http://localhost:5000/openai-completion -H "Content-Type: application/json" -d "{}"
+   ```
+
+4. Test prompt length limit(Replace %a% with a string more than 1000 characters):
+   ```bash
+   curl -X POST http://localhost:5000/openai-completion -H "Content-Type: application/json" -d "{\"prompt\": \"%a%\"}"
+   ```
+
+5. View chat history:
+   ```bash
+   curl http://localhost:5000/history
+   ```
+
+Note: Make sure the application is running before executing these commands.
