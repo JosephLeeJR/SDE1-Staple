@@ -7,6 +7,7 @@ from datetime import datetime
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import logging
+import pytz
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +28,14 @@ class ChatLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     prompt = db.Column(db.Text, nullable=False)
     completion = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, prompt, completion):
+        self.prompt = prompt
+        self.completion = completion
+        # Use Singapore timezone
+        local_tz = pytz.timezone('Asia/Singapore')
+        self.timestamp = datetime.now(local_tz).replace(tzinfo=None)
 
 # Create database tables
 with app.app_context():
